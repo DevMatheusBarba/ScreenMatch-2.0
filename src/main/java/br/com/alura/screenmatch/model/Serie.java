@@ -18,11 +18,11 @@ public class Serie {
     private String escritor;
     @Enumerated(EnumType.STRING)
     private Categoria genero;
-    private List<String> atores;
+    private String atores;
     private String poster;
     private String sinopse;
 
-    @Transient
+    @OneToMany(mappedBy = "serie" , cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Episodio> episodios = new ArrayList<>();
 
 
@@ -34,7 +34,7 @@ public class Serie {
         this.avaliacao = OptionalDouble.of(Double.valueOf(dadosSerie.avaliacao())).orElse(0);
         this.escritor = dadosSerie.escritor();
         this.genero = Categoria.fromString(dadosSerie.genero().split(",")[0].trim());
-        this.atores = Optional.of(List.of(dadosSerie.atores().split(","))).orElse(Collections.singletonList("Não foi possivel coletar"));
+        this.atores = dadosSerie.atores();
         this.poster = dadosSerie.poster();
         this.sinopse = dadosSerie.sinopse().trim();
     }
@@ -67,7 +67,7 @@ public class Serie {
         return genero;
     }
 
-    public List<String> getAtores() {
+    public String getAtores() {
         return atores;
     }
 
@@ -79,18 +79,59 @@ public class Serie {
         return sinopse;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setTotalTemporadas(Integer totalTemporadas) {
+        this.totalTemporadas = totalTemporadas;
+    }
+
+    public void setAvaliacao(Double avaliacao) {
+        this.avaliacao = avaliacao;
+    }
+
+    public void setEscritor(String escritor) {
+        this.escritor = escritor;
+    }
+
+    public void setGenero(Categoria genero) {
+        this.genero = genero;
+    }
+
+    public void setAtores(String atores) {
+        this.atores = atores;
+    }
+
+    public void setPoster(String poster) {
+        this.poster = poster;
+    }
+
+    public void setSinopse(String sinopse) {
+        this.sinopse = sinopse;
+    }
+
+    public void setEpisodios(List<Episodio> episodios) {
+        episodios.forEach(e -> e.setSerie(this));
+        this.episodios = episodios;
+    }
+
     @Override
     public String toString() {
         return
                 "genero=" + genero +
-                ", titulo='" + titulo + '\'' +
-                ", totalTemporadas=" + totalTemporadas +
-                ", avaliacao=" + avaliacao +
-                ", escritor='" + escritor + '\'' +
+                        ", titulo='" + titulo + '\'' +
+                        ", totalTemporadas=" + totalTemporadas +
+                        ", avaliacao=" + avaliacao +
+                        ", escritor='" + escritor + '\'' +
 
-                ", atores=" + atores +
-                ", poster='" + poster + '\'' +
-                ", sinopse='" + sinopse + '\'';
-
+                        ", atores=" + atores +
+                        ", poster='" + poster + '\'' +
+                        ", sinopse='" + sinopse + '\'' +
+                        ", Episodio ='" + episodios + '\'';
     }
 }
